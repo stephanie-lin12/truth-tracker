@@ -1,3 +1,31 @@
+import streamlit as st
+import cv2
+import numpy as np
+from PIL import Image
+import time
+
+# --- 網頁標題與風格設定 ---
+st.set_page_config(page_title="TVBS Truth-Tracker", page_icon="👁️", layout="wide")
+
+st.markdown("""
+    <style>
+    .main { background-color: #f0f2f6; }
+    .stAlert { border-radius: 10px; }
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- 側邊欄 ---
+with st.sidebar:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/TVBS_Logo.svg/1200px-TVBS_Logo.svg.png", width=150)
+    st.title("新聞查證控制台")
+    st.info("模式：2026 第三屆 AI Hackathon 原型機")
+    st.write("操作員：TVBS 新聞部")
+
+# --- 主畫面 ---
+st.title("👁️ TVBS 真實之眼 (Truth-Tracker)")
+st.subheader("AI 影音全自動溯源與防偽驗證系統")
+st.write("---")
+
 # --- 核心邏輯：簡單的動態評分 (不再是一成不變) ---
         img_np = np.array(image)
         
@@ -39,3 +67,7 @@
         st.error(f"鑑定結論：{verdict}。建議啟動人工複核。")
     else:
         st.info(f"鑑定結論：{verdict}。初步查核無明顯竄改痕跡。")
+
+# --- 頁尾 ---
+st.write("---")
+st.caption("© 2026 TVBS Truth-Tracker Team | 以 AI 之速，還原事實之重。")
