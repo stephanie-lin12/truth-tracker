@@ -24,7 +24,7 @@ with st.sidebar:
     st.success("🏆 **團隊：一不小心就得獎**")
     st.divider()
     st.markdown(f"""
-    **隊長：** - 林佑璇
+    **隊長：**  林佑璇
     
     **隊員：**
     - 顧守昌
