@@ -19,7 +19,7 @@ headers = {"Authorization": f"Bearer {HF_TOKEN}"}
 
 # --- 2. 側邊欄：更新團隊資訊 ---
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/TVBS_Logo.svg/1200px-TVBS_Logo.svg.png", width=150)
+    st.image("https://raw.githubusercontent.com/stephanie-lin12/truth-tracker/refs/heads/main/logo.jpg.png", width=150)
     st.title("新聞查證控制台")
     st.success("🏆 **團隊：一不小心就得獎**")
     st.divider()
