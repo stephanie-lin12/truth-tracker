@@ -20,7 +20,7 @@ st.markdown("""
 
 # --- 2. 側邊欄 ---
 with st.sidebar:
-    st.image("https://files.catbox.moe/r4uiv0.jpg", use_container_width=True)
+    st.image("https://raw.githubusercontent.com/stephanie-lin12/truth-tracker/refs/heads/main/logo.jpg.png", use_container_width=True)
     st.markdown("## 🛰️ 查證控制台")
     st.success("🏆 **團隊：一不小心就得獎**")
     st.divider()
