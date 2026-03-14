@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 
 # --- 填入你的 Hugging Face Token (或者留空，系統會用模擬模式) ---
-HF_TOKEN = "在此處貼上你的hf_開頭的Token" 
+HF_TOKEN = st.secrets["HF_TOKEN"]
 API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
 headers = {"Authorization": f"Bearer {HF_TOKEN}"}
 
