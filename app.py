@@ -11,7 +11,7 @@ st.set_page_config(page_title="TVBS Truth-Tracker", page_icon="👁️", layout=
 # --- 2. 側邊欄：團隊資訊與 Logo ---
 with st.sidebar:
     # 使用你提供的眼睛 Logo
-    st.image("https://files.catbox.moe/r4uiv0.jpg", use_container_width=True)
+    st.image("https://raw.githubusercontent.com/stephanie-lin12/truth-tracker/refs/heads/main/logo.jpg.png", use_container_width=True)
     st.title("新聞查證控制台")
     st.success("🏆 **團隊：一不小心就得獎**")
     st.divider()
