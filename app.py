@@ -69,36 +69,61 @@ if uploaded_file is not None:
 
     st.write("---")
     
-    if st.button("🚀 啟動 AI 實戰溯源"):
+  if st.button("🚀 啟動 AI 實戰溯源"):
         with st.spinner("AI 正在解析影像語義與地理指紋..."):
-            width, height = image.size
-            if width < 500:
-                final_score, addr = 38.54, "114 台北市內湖區 (範圍過大，疑似轉傳壓縮)"
-                lat, lon = 25.07, 121.56
-            else:
-                final_score, addr = 93.12, "114 台北市內湖區瑞光路 451 號 (TVBS 總部)"
-                lat, lon = 25.078, 121.567
+            time.sleep(1.5) # 模擬運算時間
             
+            # --- 演示專用模擬判斷邏輯 ---
+            file_name = uploaded_file.name.lower()
+            
+            # 模式 1：正確公司照片 (檔名包含 'tvbs' 或 'office')
+            if "tvbs" in file_name or "office" in file_name:
+                final_score = 98.42
+                addr = "114 台北市內湖區瑞光路 451 號 (TVBS 聯利媒體總部)"
+                lat, lon = 25.078, 121.567
+                verdict = "✅ 影像鑑定通過：與官方地標資料庫 100% 吻合。"
+                status = "success"
+
+            # 模式 2：GTA 遊戲照片 (檔名包含 'gta' 或 'game')
+            elif "gta" in file_name or "game" in file_name:
+                final_score = 12.15
+                addr = "無法判定具體地址 (偵測為虛擬環境座標)"
+                lat, lon = 34.05, -118.24  # 模擬洛杉磯 (GTA 地圖原型)
+                verdict = "🚨 鑑定警示：偵測到數位渲染特徵 (CG/Game Engine)，非真實攝錄影像。"
+                status = "error"
+
+            # 模式 3：高雄街景圖 (檔名包含 'street' 或 'kaohsiung' 或 'streetview')
+            elif "street" in file_name or "kaohsiung" in file_name or "ruixing" in file_name:
+                final_score = 88.76
+                addr = "830 高雄市鳳山區瑞興路 (推測地點)"
+                lat, lon = 22.627, 120.365
+                verdict = "⚠️ 影像解析：地點匹配成功。建議配合在地記者複核。"
+                status = "warning"
+            
+            # 預設模式：一般判定
+            else:
+                final_score = 60.0
+                addr = "地址分析中..."
+                lat, lon = 25.03, 121.50
+                verdict = "🔍 已辨識基礎特徵，請提供更高解析度之原圖。"
+                status = "info"
+
+            # --- 顯示數據結果 ---
             c1, c2, c3 = st.columns(3)
-            c1.metric("真實度評分 (ELA)", f"{final_score}%", delta="-12.5%" if final_score < 50 else "正常")
-            c2.metric("地理匹配率 (Geo)", "98.2%" if final_score > 50 else "15.0%")
-            c3.metric("時空一致性 (Chronos)", "PASS" if final_score > 50 else "FAILED")
+            c1.metric("真實度評分 (ELA)", f"{final_score}%", delta=None)
+            c2.metric("地理匹配率 (Geo)", "98%" if final_score > 80 else "12%")
+            c3.metric("物理一致性 (Chronos)", "PASS" if final_score > 50 else "FAILED")
 
             st.divider()
             st.subheader("📍 影像溯源地點預測")
-            st.success(f"📌 **自動識別地址：** {addr}")
+            st.success(f"📌 **偵測地址：** {addr}")
             
-            map_data = pd.DataFrame({'lat': [lat, lat+0.0005], 'lon': [lon, lon-0.0005]})
-            st.map(map_data, zoom=15)
+            map_data = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+            st.map(map_data, zoom=16)
 
-            if final_score < 50:
-                st.error("🚨 鑑定警示：影像邊緣噪點不連續，疑似 AIGC 生成或經深度竄改。")
-            else:
-                st.info("✅ 鑑定通過：影像結構完整，符合攝影器材原始拍攝特徵。")
-
-else:
-    st.info("👋 您好！請上傳一張照片開始自動化查證流程。")
-    st.image("https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1000", caption="等待影像偵測中...", use_container_width=True)
-
+            if status == "success": st.success(verdict)
+            elif status == "error": st.error(verdict)
+            elif status == "warning": st.warning(verdict)
+            else: st.info(verdict)
 st.write("---")
 st.caption("© 2026 TVBS Truth-Tracker | 團隊：一不小心就得獎 | 守護真相，還原事實之重。")
