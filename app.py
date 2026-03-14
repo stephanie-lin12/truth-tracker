@@ -47,7 +47,7 @@ if uploaded_file is not None:
         edges = cv2.Canny(gray, 100, 200)
         
         # 簡單邏輯：根據解析度給分
-        if width < 800: # 如果寬度小於 800 像素，視為高風險
+        if width < 300: # 如果寬度小於 800 像素，視為高風險
             final_score = 35
             verdict = "🚨 疑似 AI 生成或經多次轉傳壓縮"
             location_match = 12
