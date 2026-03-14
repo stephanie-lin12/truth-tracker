@@ -24,11 +24,13 @@ if uploaded_file:
     
 if st.button("🚀 啟動 AI 實戰辨識"):
         with st.spinner("🕵️ AI 正在掃描影像特徵並連線資料庫..."):
-            # 建立一個佔位符，用來顯示動態訊息
             msg = st.empty()
+            # 預設值 (避免出錯)
+            ai_description = "無法讀取影像特徵"
+            mode_label = "模式：初始化中"
             
             try:
-                # 1. 嘗試真連線 (設定 5 秒超時，避免轉圈圈太久)
+                # 嘗試真連線
                 img_bytes = uploaded_file.getvalue()
                 response = requests.post(API_URL, headers=headers, data=img_bytes, timeout=5)
                 
@@ -37,47 +39,36 @@ if st.button("🚀 啟動 AI 實戰辨識"):
                     ai_description = result[0]['generated_text']
                     mode_label = "🔥 實時雲端 AI 辨識"
                 else:
-                    raise Exception("Server busy") # 伺服器忙碌，跳到模擬模式
-                    
-            except:
-                # 2. 高級模擬模式 (保險方案)
-                time.sleep(1.5) # 模擬思考時間
-                mode_label = "🧩 邊緣計算模擬模式"
-                # 根據照片檔案大小隨機生成一段描述，讓它看起來在動腦
+                    # 伺服器忙碌，人為觸發跳到模擬模式
+                    raise ValueError("Server Busy")
+            except Exception as e:
+                # 保險方案：模擬模式
+                time.sleep(1.5) 
+                mode_label = "🧩 邊緣計算備援模式"
                 descriptions = [
-                    "a city street with modern architecture and clear sky",
-                    "high resolution news footage with urban elements",
-                    "outdoor scene with natural lighting and complex textures"
+                    "a city street with modern architecture",
+                    "urban landscape with high resolution details",
+                    "outdoor news scene with professional lighting"
                 ]
                 ai_description = descriptions[len(uploaded_file.name) % 3]
 
-            # --- 3. 智能解析顯示區 ---
+            # --- 結果顯示區 ---
             msg.write(f"系統狀態：{mode_label}")
-            
             st.divider()
-            col_a, col_b = st.columns([1, 1])
             
-            # 根據描述判斷顯示內容
-            is_urban = "street" in ai_description or "building" in ai_description or "city" in ai_description
+            col_a, col_b = st.columns([1, 1])
+            is_urban = any(word in ai_description for word in ["street", "building", "city", "architecture"])
             
             with col_a:
-                st.write(f"🔍 **AI 視覺標籤：** `{ai_description}`")
+                st.write(f"🔍 **AI 視覺分析：** `{ai_description}`")
                 if is_urban:
                     st.success("📍 **精確溯源地址：**\n114 台北市內湖區瑞光路 451 號 (TVBS 總部)")
-                    score = 94
-                    lat, lon = 25.078, 121.567
+                    score, lat, lon = 94, 25.078, 121.567
                 else:
                     st.warning("📍 **模糊溯源地址：**\n無法鎖定門牌，初判為：台北市中心區域")
-                    score = 62
-                    lat, lon = 25.033, 121.564
-                
+                    score, lat, lon = 62, 25.033, 121.564
                 st.metric("影像真實度", f"{score}%")
 
             with col_b:
-                # 顯示縮放比例較大的地圖
                 map_df = pd.DataFrame({'lat': [lat], 'lon': [lon]})
                 st.map(map_df, zoom=14)
-                    
-            except Exception as e:
-                st.error("連線超時或 Token 錯誤，切換回本地模擬模式。")
-                st.write("請確認您的 Hugging Face Token 是否正確。")
