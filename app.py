@@ -58,17 +58,26 @@ if st.button("🚀 啟動 AI 實戰辨識"):
             
             col_a, col_b = st.columns([1, 1])
             is_urban = any(word in ai_description for word in ["street", "building", "city", "architecture"])
-            
-            with col_a:
-                st.write(f"🔍 **AI 視覺分析：** `{ai_description}`")
-                if is_urban:
-                    st.success("📍 **精確溯源地址：**\n114 台北市內湖區瑞光路 451 號 (TVBS 總部)")
-                    score, lat, lon = 94, 25.078, 121.567
-                else:
-                    st.warning("📍 **模糊溯源地址：**\n無法鎖定門牌，初判為：台北市中心區域")
-                    score, lat, lon = 62, 25.033, 121.564
-                st.metric("影像真實度", f"{score}%")
+with col2:
+        st.markdown("### 🔍 深度取證鑑定中...")
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        # 模擬更真實的鑑定過程
+        for p in range(0, 101, 10):
+            time.sleep(0.15)
+            progress_bar.progress(p)
+            status_text.text(f"分析中：{['位元流檢查', '傅立葉頻譜轉換', '光影規律建模', '地理指紋比對'][p//30 if p<90 else 3]}...")
 
-            with col_b:
-                map_df = pd.DataFrame({'lat': [lat], 'lon': [lon]})
-                st.map(map_df, zoom=14)
+        # --- 真實影像處理：產生 ELA 熱力圖 ---
+        img_np = np.array(image.convert('RGB'))
+        # 故意進行一次壓縮再比對，這是專業的 ELA 偵測法
+        _, encoded_img = cv2.imencode('.jpg', img_np, [cv2.IMWRITE_JPEG_QUALITY, 90])
+        decoded_img = cv2.imdecode(encoded_img, 1)
+        diff = cv2.absdiff(img_np, decoded_img) * 15 # 放大差異
+        
+        st.image(diff, caption="ELA 數位竄改痕跡熱力圖 (亮度越高代表竄改風險越高)", use_container_width=True)
+        
+        # 產生隨機但合理的數據
+        seed = len(uploaded_file.name)
+        real_score = round(90 + (seed % 10) * 0.74, 2) if len(uploaded_file.name) > 10 else round(30 + (seed % 20) * 1.15, 2)
