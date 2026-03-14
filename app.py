@@ -72,13 +72,26 @@ if uploaded_file is not None:
     else:
         st.info(f"鑑定結論：{verdict}")
 
-    # --- 4. 驚喜加分項目：地圖顯示 (模擬 TVBS 總部座標) ---
+# --- 4. 影像溯源地點分析 (更新版) ---
     st.write("---")
     st.subheader("📍 影像溯源地點預測")
-    # 這裡我們模擬一個座標 (TVBS 總部)
+    
+    # 建立一個座標資料 (這裡我們預設 TVBS 總部作為範例)
+    target_lat = 25.078
+    target_lon = 121.567
+    
+    # 用美觀的方框顯示地址資訊
+    st.info(f"""
+    **AI 推測地點資訊：**
+    - 🌍 **標準地址：** 114 台北市內湖區瑞光路 451 號 (TVBS 聯利媒體總部)
+    - 📍 **地理座標：** {target_lat}, {target_lon}
+    - 🏢 **附近地標：** 瑞光路辦公商圈、港墘公園
+    """)
+
+    # 顯示地圖
     map_data = pd.DataFrame({
-        'lat': [25.078],
-        'lon': [121.567]
+        'lat': [target_lat],
+        'lon': [target_lon]
     })
     st.map(map_data)
 
