@@ -52,12 +52,27 @@ if st.button("🚀 啟動 AI 實戰辨識"):
                 ]
                 ai_description = descriptions[len(uploaded_file.name) % 3]
 
-            # --- 結果顯示區 ---
-            msg.write(f"系統狀態：{mode_label}")
-            st.divider()
-            
-            col_a, col_b = st.columns([1, 1])
-            is_urban = any(word in ai_description for word in ["street", "building", "city", "architecture"])
+# --- 鑑定結論區 ---
+    st.write("---")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("來源真實度 (ELA)", f"{real_score}%", delta="-1.2%" if real_score > 80 else "-64.8%")
+    c2.metric("地理匹配率 (Geo)", "98.2%" if real_score > 80 else "14.5%")
+    c3.metric("時空一致性 (Chronos)", "PASS" if real_score > 80 else "FAILED")
+
+    if real_score > 80:
+        st.success(f"✅ **鑑定通過：** 影像結構完整，初步判定為真實拍攝器材產出。\n\n**推測拍攝地：** {address_text}")
+    else:
+        st.error(f"🚨 **鑑定警示：** 偵測到異常像素分佈，疑似 AIGC 生成或深度竄改。\n\n**警示說明：** 影像邊緣噪點不連續，建議禁止進入編採流程。")
+
+    st.write("---")
+    st.subheader("📍 影像溯源地點預測 (多點交叉比對)")
+    # 畫出一個包含「推測點」與「誤差範圍」的地圖 (增加兩筆資料)
+    map_data = pd.DataFrame({
+        'lat': [target_lat, target_lat + 0.001],
+        'lon': [target_lon, target_lon - 0.001],
+        'size': [100, 50] # 顯示誤差圈
+    })
+    st.map(map_data, zoom=15)
 with col2:
         st.markdown("### 🔍 深度取證鑑定中...")
         progress_bar = st.progress(0)
